@@ -9,7 +9,7 @@ export function TableStyled(props: TableStyledProps) {
   return (
     <table>
       {data.map((row) => (
-        <tr>
+        <tr className="font-bold">
           {row.map((value) => (
             <td>{value}</td>
           ))}
