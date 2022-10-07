@@ -16,7 +16,6 @@ export function useOrderBook() {
           messageData.channel === "detail_order_book_ethusd" &&
           messageData.event === "data"
         ) {
-          console.log(e.data);
           setBids(messageData.data.bids);
           setAsks(messageData.data.asks);
         }
