@@ -4,7 +4,7 @@ type SocketApiParams = {
   onMessage: (e: MessageEvent<any>) => void;
 };
 
-export type OrderBookEntry = [string, string];
+export type OrderBookEntry = [string, string, string];
 
 export function BitstampSocketClient(params: SocketApiParams) {
   const { onMessage } = params;
@@ -14,7 +14,7 @@ export function BitstampSocketClient(params: SocketApiParams) {
     socket.send(`{
         "event": "bts:subscribe",
         "data": {
-            "channel": "order_book_ethusd"
+            "channel": "detail_order_book_ethusd"
         }
     }`);
   });
@@ -25,7 +25,7 @@ export function BitstampSocketClient(params: SocketApiParams) {
     socket.send(`{
       "event": "bts:unsubscribe",
       "data": {
-          "channel": "order_book_ethusd"
+          "channel": "detail_order_book_ethusd"
       }
   }`);
   };
