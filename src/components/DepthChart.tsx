@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { OrderBookEntry } from "../api/BitstampSocketClient";
 import { area, line } from "d3-shape";
 import { SectionHeader } from "./SectionHeader";
+import { DepthChartControls } from "./DepthChartControls";
 
 type CumulativeBookEntry = {
   sum: number;
@@ -32,17 +33,26 @@ function parseAndCumulate(
 
 const orderBookFetchInterval = 2000;
 
-export function DepthChart() {
+type DepthChartProps = {
+  lastPrice: number;
+};
+
+export function DepthChart(props: DepthChartProps) {
+  const { lastPrice } = props;
+
   const svgRef = useRef<SVGSVGElement>(null);
   const { width, height } = svgRef.current?.getBoundingClientRect() || {
     width: 0,
     height: 0,
   };
 
-  const midPrice = 1300;
-  const rangePercent = 0.1;
-  const highLimit = midPrice * (1 + rangePercent);
-  const lowLimit = midPrice * (1 - rangePercent);
+  const [zoomLevel, setZoomLevel] = useState(0.1);
+  const highLimit = lastPrice * (1 + zoomLevel);
+  const lowLimit = lastPrice * (1 - zoomLevel);
+  const canZoomIn = zoomLevel > 0.01;
+  const canZoomOut = zoomLevel < 1;
+  const zoomIn = () => canZoomIn && setZoomLevel(zoomLevel / 2);
+  const zoomOut = () => canZoomOut && setZoomLevel(zoomLevel * 2);
 
   const [bids, setBids] = useState<OrderBookEntry[]>([]);
   const cumulativeBids = parseAndCumulate(bids, lowLimit, highLimit);
@@ -95,6 +105,11 @@ export function DepthChart() {
   return (
     <div className="bg-slate-800">
       <SectionHeader title="Depth Chart" />
+      <DepthChartControls
+        lastPrice={lastPrice}
+        onZoomInButtonClick={zoomIn}
+        onZoomOutButtonClick={zoomOut}
+      />
       <svg width="100%" height="200" ref={svgRef}>
         <path
           d={lineDataGenerator(cumulativeBids) || undefined}

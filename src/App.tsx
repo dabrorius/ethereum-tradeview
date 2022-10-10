@@ -15,7 +15,7 @@ function App() {
           highPrice={highPrice}
           lowPrice={lowPrice}
         />
-        <DepthChart />
+        <DepthChart lastPrice={lastPrice} />
         <OrderBook />
       </header>
     </div>
