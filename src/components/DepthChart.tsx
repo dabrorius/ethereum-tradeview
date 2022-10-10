@@ -110,13 +110,16 @@ export function DepthChart(props: DepthChartProps) {
     const previous = index === 0 ? current : array[index - 1];
     const next = index === array.length - 1 ? current : array[index + 1];
 
-    const topEdgeValue = current.value + (previous.value - current.value) / 2;
-    const botEdgeValue = current.value - (current.value - next.value) / 2;
+    const topEdgeValue: number =
+      current.value + (previous.value - current.value) / 2;
+    const botEdgeValue: number =
+      current.value - (current.value - next.value) / 2;
 
     return {
       datum: current,
+      key: `${current.value}-${current.amount}`,
       x: scaleX(botEdgeValue),
-      width: scaleX(topEdgeValue) - scaleX(botEdgeValue),
+      width: scaleX(topEdgeValue) - scaleX(botEdgeValue) + 1,
     };
   });
 
@@ -155,20 +158,41 @@ export function DepthChart(props: DepthChartProps) {
 
         <g>
           {hoverAreas.map((hoverArea) => (
-            <g>
-              <rect
-                fill="blue"
-                opacity="0.2"
-                x={hoverArea.x}
-                width={hoverArea.width}
-                y={0}
-                height={height}
-                onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
-                onMouseLeave={() => setHoveredDatum(null)}
-              />
-            </g>
+            <rect
+              key={hoverArea.key}
+              fill="blue"
+              opacity="0"
+              x={hoverArea.x}
+              width={hoverArea.width}
+              y={0}
+              height={height}
+              onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
+              onMouseLeave={() => setHoveredDatum(null)}
+            />
           ))}
         </g>
+
+        {hoveredDatum && (
+          <line
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="2 3"
+            opacity="0.3"
+            x1={scaleX(hoveredDatum.value)}
+            y1={0}
+            x2={scaleX(hoveredDatum.value)}
+            y2={height}
+          />
+        )}
+
+        {hoveredDatum && (
+          <circle
+            fill="green"
+            r={4}
+            cx={scaleX(hoveredDatum.value)}
+            cy={scaleY(hoveredDatum.sum)}
+          />
+        )}
       </svg>
     </div>
   );
