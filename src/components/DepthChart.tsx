@@ -1,4 +1,3 @@
-// import { useOrderBook } from "../hooks/useOrderBook";
 import { scaleLinear } from "d3-scale";
 import { extent, max } from "d3-array";
 import { BitstampHttpClient } from "../api/BitstampHttpClient";
@@ -26,9 +25,9 @@ function parseAndCumulate(entries: OrderBookEntry[]): CumulativeBookEntry[] {
     });
 }
 
-export function DepthChart() {
-  // const [bids, asks] = useOrderBook();
+const orderBookFetchInterval = 2000;
 
+export function DepthChart() {
   const svgRef = useRef<SVGSVGElement>(null);
   const { width, height } = svgRef.current?.getBoundingClientRect() || {
     width: 0,
@@ -41,11 +40,21 @@ export function DepthChart() {
   const [asks, setAsks] = useState<OrderBookEntry[]>([]);
   const cumulativeAsks = parseAndCumulate(asks);
 
+  const fetchBidsAndAsks = () => {
+    BitstampHttpClient.fetchOrderBook()
+      .then((response) => {
+        setBids(response.data.bids);
+        setAsks(response.data.asks);
+      })
+      .catch((error) => {
+        console.error("Error occured when fetching order book", error);
+      });
+  };
+
   useEffect(() => {
-    BitstampHttpClient.fetchOrderBook().then((response) => {
-      setBids(response.data.bids);
-      setAsks(response.data.asks);
-    });
+    fetchBidsAndAsks();
+    const interval = setInterval(fetchBidsAndAsks, orderBookFetchInterval);
+    return () => clearInterval(interval);
   }, []);
 
   const bidValues = cumulativeBids.map((bid) => bid.value);
