@@ -46,6 +46,10 @@ export function DepthChart(props: DepthChartProps) {
     height: 0,
   };
 
+  const [hoveredDatum, setHoveredDatum] = useState<CumulativeBookEntry | null>(
+    null
+  );
+
   const [zoomLevel, setZoomLevel] = useState(0.1);
   const highLimit = lastPrice * (1 + zoomLevel);
   const lowLimit = lastPrice * (1 - zoomLevel);
@@ -102,9 +106,24 @@ export function DepthChart(props: DepthChartProps) {
     .y0(() => height)
     .y1((d) => scaleY(d.sum));
 
+  const hoverAreas = cumulativeBids.map((current, index, array) => {
+    const previous = index === 0 ? current : array[index - 1];
+    const next = index === array.length - 1 ? current : array[index + 1];
+
+    const topEdgeValue = current.value + (previous.value - current.value) / 2;
+    const botEdgeValue = current.value - (current.value - next.value) / 2;
+
+    return {
+      datum: current,
+      x: scaleX(botEdgeValue),
+      width: scaleX(topEdgeValue) - scaleX(botEdgeValue),
+    };
+  });
+
   return (
     <div className="bg-slate-800">
       <SectionHeader title="Depth Chart" />
+      <div className="text-yellow-50">{hoveredDatum?.value}</div>
       <DepthChartControls
         lastPrice={lastPrice}
         onZoomInButtonClick={zoomIn}
@@ -133,6 +152,23 @@ export function DepthChart(props: DepthChartProps) {
           fill="red"
           opacity="0.3"
         />
+
+        <g>
+          {hoverAreas.map((hoverArea) => (
+            <g>
+              <rect
+                fill="blue"
+                opacity="0.2"
+                x={hoverArea.x}
+                width={hoverArea.width}
+                y={0}
+                height={height}
+                onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
+                onMouseLeave={() => setHoveredDatum(null)}
+              />
+            </g>
+          ))}
+        </g>
       </svg>
     </div>
   );
