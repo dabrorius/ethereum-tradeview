@@ -12,10 +12,16 @@ export function BitstampSocketClient(params: SocketApiParams) {
   const socket = new WebSocket(socketServer);
   socket.addEventListener("open", () => {
     socket.send(`{
-        "event": "bts:subscribe",
-        "data": {
-            "channel": "detail_order_book_ethusd"
-        }
+      "event": "bts:subscribe",
+      "data": {
+          "channel": "detail_order_book_ethusd"
+      }
+    }`);
+    socket.send(`{
+      "event": "bts:subscribe",
+      "data": {
+          "channel": "live_trades_ethusd"
+      }
     }`);
   });
 
@@ -27,6 +33,12 @@ export function BitstampSocketClient(params: SocketApiParams) {
       "data": {
           "channel": "detail_order_book_ethusd"
       }
-  }`);
+    }`);
+    socket.send(`{
+      "event": "bts:unsubscribe",
+      "data": {
+          "channel": "live_trades_ethusd"
+      }
+    }`);
   };
 }
