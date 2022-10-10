@@ -4,6 +4,7 @@ import { BitstampHttpClient } from "../api/BitstampHttpClient";
 import { useEffect, useRef, useState } from "react";
 import { OrderBookEntry } from "../api/BitstampSocketClient";
 import { area, line } from "d3-shape";
+import { SectionHeader } from "./SectionHeader";
 
 type CumulativeBookEntry = {
   sum: number;
@@ -92,29 +93,32 @@ export function DepthChart() {
     .y1((d) => scaleY(d.sum));
 
   return (
-    <svg width="100%" height="200" ref={svgRef}>
-      <path
-        d={lineDataGenerator(cumulativeBids) || undefined}
-        stroke="green"
-        fill="none"
-      />
-      <path
-        d={areaDataGenerator(cumulativeBids) || undefined}
-        stroke="none"
-        fill="green"
-        opacity="0.3"
-      />
-      <path
-        d={lineDataGenerator(cumulativeAsks) || undefined}
-        stroke="red"
-        fill="none"
-      />
-      <path
-        d={areaDataGenerator(cumulativeAsks) || undefined}
-        stroke="none"
-        fill="red"
-        opacity="0.3"
-      />
-    </svg>
+    <div className="bg-slate-800">
+      <SectionHeader title="Depth Chart" />
+      <svg width="100%" height="200" ref={svgRef}>
+        <path
+          d={lineDataGenerator(cumulativeBids) || undefined}
+          stroke="green"
+          fill="none"
+        />
+        <path
+          d={areaDataGenerator(cumulativeBids) || undefined}
+          stroke="none"
+          fill="green"
+          opacity="0.3"
+        />
+        <path
+          d={lineDataGenerator(cumulativeAsks) || undefined}
+          stroke="red"
+          fill="none"
+        />
+        <path
+          d={areaDataGenerator(cumulativeAsks) || undefined}
+          stroke="none"
+          fill="red"
+          opacity="0.3"
+        />
+      </svg>
+    </div>
   );
 }
