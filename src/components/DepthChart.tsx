@@ -94,7 +94,7 @@ export function DepthChart(props: DepthChartProps) {
   const maxAmount = max(amounts) || 0;
 
   const scaleY = scaleLinear()
-    .domain([0, maxAmount * 1.2])
+    .domain([0, maxAmount * 1.3])
     .range([height, 0]);
 
   const lineDataGenerator = line<CumulativeBookEntry>()
@@ -119,81 +119,94 @@ export function DepthChart(props: DepthChartProps) {
       datum: current,
       key: `${current.value}-${current.amount}`,
       x: scaleX(botEdgeValue),
-      width: scaleX(topEdgeValue) - scaleX(botEdgeValue) + 1,
+      width: scaleX(topEdgeValue) - scaleX(botEdgeValue),
     };
   });
 
   return (
     <div className="bg-slate-800">
       <SectionHeader title="Depth Chart" />
-      <div className="text-yellow-50">{hoveredDatum?.value}</div>
       <DepthChartControls
         lastPrice={lastPrice}
         onZoomInButtonClick={zoomIn}
         onZoomOutButtonClick={zoomOut}
       />
-      <svg width="100%" height="200" ref={svgRef}>
-        <path
-          d={lineDataGenerator(cumulativeBids) || undefined}
-          stroke="green"
-          fill="none"
-        />
-        <path
-          d={areaDataGenerator(cumulativeBids) || undefined}
-          stroke="none"
-          fill="green"
-          opacity="0.3"
-        />
-        <path
-          d={lineDataGenerator(cumulativeAsks) || undefined}
-          stroke="red"
-          fill="none"
-        />
-        <path
-          d={areaDataGenerator(cumulativeAsks) || undefined}
-          stroke="none"
-          fill="red"
-          opacity="0.3"
-        />
-
-        <g>
-          {hoverAreas.map((hoverArea) => (
-            <rect
-              key={hoverArea.key}
-              fill="blue"
-              opacity="0"
-              x={hoverArea.x}
-              width={hoverArea.width}
-              y={0}
-              height={height}
-              onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
-              onMouseLeave={() => setHoveredDatum(null)}
-            />
-          ))}
-        </g>
-
+      <div className="relative">
         {hoveredDatum && (
-          <line
-            stroke="white"
-            strokeWidth="1"
-            strokeDasharray="2 3"
-            opacity="0.3"
-            x1={scaleX(hoveredDatum.value)}
-            y1={0}
-            x2={scaleX(hoveredDatum.value)}
-            y2={height}
-          />
+          <div
+            className="absolute text-yellow-50 text-sm px-2"
+            style={{ left: scaleX(hoveredDatum.value) }}
+          >
+            <p>{`$${hoveredDatum.value}`}</p>
+            <p>{hoveredDatum.sum}</p>
+          </div>
         )}
 
-        {hoveredDatum && (
-          <circle
+        <svg width="100%" height="200" ref={svgRef}>
+          <path
+            d={lineDataGenerator(cumulativeBids) || undefined}
+            stroke="green"
+            fill="none"
+          />
+          <path
+            d={areaDataGenerator(cumulativeBids) || undefined}
+            stroke="none"
             fill="green"
-            r={4}
-            cx={scaleX(hoveredDatum.value)}
-            cy={scaleY(hoveredDatum.sum)}
+            opacity="0.3"
           />
-        )}
-      </svg>
+          <path
+            d={lineDataGenerator(cumulativeAsks) || undefined}
+            stroke="red"
+            fill="none"
+          />
+          <path
+            d={areaDataGenerator(cumulativeAsks) || undefined}
+            stroke="none"
+            fill="red"
+            opacity="0.3"
+          />
+
+          <g>
+            {hoverAreas.map((hoverArea) => (
+              <rect
+                key={hoverArea.key}
+                fill="blue"
+                opacity="0"
+                x={hoverArea.x}
+                width={hoverArea.width}
+                y={0}
+                height={height}
+                onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
+                onMouseLeave={() => setHoveredDatum(null)}
+              />
+            ))}
+          </g>
+
+          {hoveredDatum && (
+            <line
+              className="pointer-events-none"
+              stroke="white"
+              strokeWidth="1"
+              strokeDasharray="2 3"
+              opacity="0.3"
+              x1={scaleX(hoveredDatum.value)}
+              y1={0}
+              x2={scaleX(hoveredDatum.value)}
+              y2={height}
+            />
+          )}
+
+          {hoveredDatum && (
+            <circle
+              className="pointer-events-none"
+              fill="green"
+              r={4}
+              cx={scaleX(hoveredDatum.value)}
+              cy={scaleY(hoveredDatum.sum)}
+            />
+          )}
+        </svg>
+      </div>
     </div>
   );
 }
