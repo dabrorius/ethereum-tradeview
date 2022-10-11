@@ -1,11 +1,14 @@
 import React from "react";
+import { CandleChart } from "./components/CandleChart";
 import { DepthChart } from "./components/DepthChart";
 import { OrderBook } from "./components/OrderBook";
 import { TradeviewHeader } from "./components/TradeviewHeader";
 import { useLiveTicker } from "./hooks/useLiveTicker";
+import { useLiveTrades } from "./hooks/useLiveTrades";
 
 function App() {
   const [lastPrice, highPrice, lowPrice] = useLiveTicker();
+  const trades = useLiveTrades();
 
   return (
     <div className="App">
@@ -15,6 +18,7 @@ function App() {
           highPrice={highPrice}
           lowPrice={lowPrice}
         />
+        <CandleChart trades={trades} />
         <DepthChart lastPrice={lastPrice} />
         <OrderBook />
       </header>
