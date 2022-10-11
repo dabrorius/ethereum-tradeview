@@ -6,11 +6,17 @@ import { OrderBookEntry } from "../api/BitstampSocketClient";
 import { area, line } from "d3-shape";
 import { SectionHeader } from "./SectionHeader";
 import { DepthChartControls } from "./DepthChartControls";
+import { DepthChartHoverAreas } from "./DepthChartHoverAreas";
 
-type CumulativeBookEntry = {
+export type CumulativeBookEntry = {
   sum: number;
   value: number;
   amount: number;
+};
+
+type HoveredDatumInfo = {
+  datum: CumulativeBookEntry;
+  type: "bid" | "ask";
 };
 
 function parseAndCumulate(
@@ -46,7 +52,7 @@ export function DepthChart(props: DepthChartProps) {
     height: 0,
   };
 
-  const [hoveredDatum, setHoveredDatum] = useState<CumulativeBookEntry | null>(
+  const [hoveredDatum, setHoveredDatum] = useState<HoveredDatumInfo | null>(
     null
   );
 
@@ -106,23 +112,6 @@ export function DepthChart(props: DepthChartProps) {
     .y0(() => height)
     .y1((d) => scaleY(d.sum));
 
-  const hoverAreas = cumulativeBids.map((current, index, array) => {
-    const previous = index === 0 ? current : array[index - 1];
-    const next = index === array.length - 1 ? current : array[index + 1];
-
-    const topEdgeValue: number =
-      current.value + (previous.value - current.value) / 2;
-    const botEdgeValue: number =
-      current.value - (current.value - next.value) / 2;
-
-    return {
-      datum: current,
-      key: `${current.value}-${current.amount}`,
-      x: scaleX(botEdgeValue),
-      width: scaleX(topEdgeValue) - scaleX(botEdgeValue),
-    };
-  });
-
   return (
     <div className="bg-slate-800">
       <SectionHeader title="Depth Chart" />
@@ -135,10 +124,10 @@ export function DepthChart(props: DepthChartProps) {
         {hoveredDatum && (
           <div
             className="absolute text-yellow-50 text-sm px-2"
-            style={{ left: scaleX(hoveredDatum.value) }}
+            style={{ left: scaleX(hoveredDatum.datum.value) }}
           >
-            <p>{`$${hoveredDatum.value}`}</p>
-            <p>{hoveredDatum.sum}</p>
+            <p>{`$${hoveredDatum.datum.value}`}</p>
+            <p>{hoveredDatum.datum.sum}</p>
           </div>
         )}
 
@@ -166,21 +155,21 @@ export function DepthChart(props: DepthChartProps) {
             opacity="0.3"
           />
 
-          <g>
-            {hoverAreas.map((hoverArea) => (
-              <rect
-                key={hoverArea.key}
-                fill="blue"
-                opacity="0"
-                x={hoverArea.x}
-                width={hoverArea.width}
-                y={0}
-                height={height}
-                onMouseEnter={() => setHoveredDatum(hoverArea.datum)}
-                onMouseLeave={() => setHoveredDatum(null)}
-              />
-            ))}
-          </g>
+          <DepthChartHoverAreas
+            bids={cumulativeBids}
+            height={height}
+            scaleX={scaleX}
+            onMouseEnter={(datum) => setHoveredDatum({ datum, type: "bid" })}
+            onMouseLeave={() => setHoveredDatum(null)}
+          />
+
+          <DepthChartHoverAreas
+            bids={cumulativeAsks}
+            height={height}
+            scaleX={scaleX}
+            onMouseEnter={(datum) => setHoveredDatum({ datum, type: "ask" })}
+            onMouseLeave={() => setHoveredDatum(null)}
+          />
 
           {hoveredDatum && (
             <line
@@ -189,9 +178,9 @@ export function DepthChart(props: DepthChartProps) {
               strokeWidth="1"
               strokeDasharray="2 3"
               opacity="0.3"
-              x1={scaleX(hoveredDatum.value)}
+              x1={scaleX(hoveredDatum.datum.value)}
               y1={0}
-              x2={scaleX(hoveredDatum.value)}
+              x2={scaleX(hoveredDatum.datum.value)}
               y2={height}
             />
           )}
@@ -199,10 +188,10 @@ export function DepthChart(props: DepthChartProps) {
           {hoveredDatum && (
             <circle
               className="pointer-events-none"
-              fill="green"
+              fill={hoveredDatum.type === "bid" ? "green" : "red"}
               r={4}
-              cx={scaleX(hoveredDatum.value)}
-              cy={scaleY(hoveredDatum.sum)}
+              cx={scaleX(hoveredDatum.datum.value)}
+              cy={scaleY(hoveredDatum.datum.sum)}
             />
           )}
         </svg>
