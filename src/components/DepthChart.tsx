@@ -1,5 +1,5 @@
 import { scaleLinear } from "d3-scale";
-import { extent, max, range } from "d3-array";
+import { extent, max } from "d3-array";
 import { BitstampHttpClient } from "../api/BitstampHttpClient";
 import { useEffect, useRef, useState } from "react";
 import { OrderBookEntry } from "../api/BitstampSocketClient";
