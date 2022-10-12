@@ -2,6 +2,7 @@ import { extent, maxIndex, minIndex } from "d3-array";
 import { scaleLinear, scaleTime } from "d3-scale";
 import { TradeEntry } from "../hooks/useLiveTrades";
 import { groupBy } from "lodash";
+import { CandleChartCandle } from "./CandleChartCandle";
 
 type CandleChartProps = {
   trades: TradeEntry[];
@@ -69,29 +70,22 @@ export function CandleChart(props: CandleChartProps) {
       candleHeight,
       wickBottom,
       wickHeight,
+      color: close > openPrice ? "green" : "red",
     };
   });
 
   return (
     <svg width="100%" height="200">
       {candlePositions.map((c) => (
-        <g key={c.id}>
-          <rect
-            x={c.x}
-            y={c.wickBottom}
-            width="1"
-            height={c.wickHeight}
-            fill="yellow"
-          />
-          <rect
-            x={c.x}
-            y={c.candleBottom}
-            width="6"
-            height={c.candleHeight}
-            fill="red"
-            onMouseDown={() => console.log(c)}
-          />
-        </g>
+        <CandleChartCandle
+          key={c.id}
+          x={c.x}
+          wickBottom={c.wickBottom}
+          wickHeight={c.wickHeight}
+          candleBottom={c.candleBottom}
+          candleHeight={c.candleHeight}
+          color={c.color}
+        />
       ))}
     </svg>
   );
