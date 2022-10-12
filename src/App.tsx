@@ -2,6 +2,7 @@ import React from "react";
 import { CandleChart } from "./components/CandleChart";
 import { DepthChart } from "./components/DepthChart";
 import { OrderBook } from "./components/OrderBook";
+import { TableTrades } from "./components/TableTrades";
 import { TradeviewHeader } from "./components/TradeviewHeader";
 import { useLiveTicker } from "./hooks/useLiveTicker";
 import { useLiveTrades } from "./hooks/useLiveTrades";
@@ -18,6 +19,7 @@ function App() {
           highPrice={highPrice}
           lowPrice={lowPrice}
         />
+        <TableTrades trades={trades} />
         <CandleChart trades={trades} />
         <DepthChart lastPrice={lastPrice} />
         <OrderBook />

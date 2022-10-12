@@ -11,9 +11,11 @@ export function OrderBook() {
   return (
     <div className="bg-gray-900">
       <SectionHeader title="Order book" />
-      <div className="flex">
-        <TableBids data={bids} />
-        <TableAsks data={asks} />
+      <div className="overflow-scroll" style={{ height: 400 }}>
+        <div className="flex">
+          <TableBids data={bids} />
+          <TableAsks data={asks} />
+        </div>
       </div>
     </div>
   );
