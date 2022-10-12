@@ -3,6 +3,8 @@ import { scaleLinear, scaleTime } from "d3-scale";
 import { TradeEntry } from "../hooks/useLiveTrades";
 import { groupBy } from "lodash";
 import { CandleChartCandle } from "./CandleChartCandle";
+import { useRef } from "react";
+import { SectionHeader } from "./SectionHeader";
 
 type CandleChartProps = {
   trades: TradeEntry[];
@@ -10,6 +12,12 @@ type CandleChartProps = {
 
 export function CandleChart(props: CandleChartProps) {
   const { trades } = props;
+
+  const svgRef = useRef<SVGSVGElement>(null);
+  const { width, height } = svgRef.current?.getBoundingClientRect() || {
+    width: 0,
+    height: 0,
+  };
 
   const groupedTrades = groupBy(trades, (trade) => {
     const unixTimestamp = trade.date.getTime();
@@ -40,9 +48,6 @@ export function CandleChart(props: CandleChartProps) {
 
   const dates = trades.map((d) => d.date);
   const [minDate = new Date(), maxDate = new Date()] = extent(dates);
-
-  const width = 1400;
-  const height = 200;
 
   const scaleY = scaleLinear().domain([minPrice, maxPrice]).range([height, 0]);
   const scaleX = scaleTime().domain([minDate, maxDate]).range([0, width]);
@@ -75,18 +80,21 @@ export function CandleChart(props: CandleChartProps) {
   });
 
   return (
-    <svg width="100%" height="200">
-      {candlePositions.map((c) => (
-        <CandleChartCandle
-          key={c.id}
-          x={c.x}
-          wickBottom={c.wickBottom}
-          wickHeight={c.wickHeight}
-          candleBottom={c.candleBottom}
-          candleHeight={c.candleHeight}
-          color={c.color}
-        />
-      ))}
-    </svg>
+    <div className="bg-slate-800">
+      <SectionHeader title="ETH/USD" />
+      <svg width="100%" height="200" ref={svgRef}>
+        {candlePositions.map((c) => (
+          <CandleChartCandle
+            key={c.id}
+            x={c.x}
+            wickBottom={c.wickBottom}
+            wickHeight={c.wickHeight}
+            candleBottom={c.candleBottom}
+            candleHeight={c.candleHeight}
+            color={c.color}
+          />
+        ))}
+      </svg>
+    </div>
   );
 }
