@@ -1,10 +1,10 @@
-import { extent, maxIndex, minIndex } from "d3-array";
+import { extent, maxIndex } from "d3-array";
 import { scaleLinear, scaleTime } from "d3-scale";
 import { TradeEntry } from "../hooks/useLiveTrades";
 import { groupBy } from "lodash";
 import { CandleChartCandle } from "./CandleChartCandle";
 import { useRef } from "react";
-import { SectionHeader } from "./SectionHeader";
+import { Section } from "./Section";
 
 type CandleChartProps = {
   trades: TradeEntry[];
@@ -80,9 +80,8 @@ export function CandleChart(props: CandleChartProps) {
   });
 
   return (
-    <div className="bg-slate-800">
-      <SectionHeader title="ETH/USD" />
-      <svg width="100%" height="200" ref={svgRef}>
+    <Section title="ETH/USD" gridArea="candles">
+      <svg width="100%" ref={svgRef}>
         {candlePositions.map((c) => (
           <CandleChartCandle
             key={c.id}
@@ -95,6 +94,6 @@ export function CandleChart(props: CandleChartProps) {
           />
         ))}
       </svg>
-    </div>
+    </Section>
   );
 }

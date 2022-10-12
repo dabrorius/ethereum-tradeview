@@ -7,7 +7,7 @@ type DepthChartControlsProps = {
 export function DepthChartControls(props: DepthChartControlsProps) {
   const { onZoomInButtonClick, onZoomOutButtonClick, lastPrice } = props;
   return (
-    <div className="flex justify-center w-full">
+    <div className="absolute flex justify-center w-full">
       <div className="flex items-center">
         <button className="text-white text-xl" onClick={onZoomOutButtonClick}>
           -

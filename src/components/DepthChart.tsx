@@ -4,9 +4,9 @@ import { BitstampHttpClient } from "../api/BitstampHttpClient";
 import { useEffect, useRef, useState } from "react";
 import { OrderBookEntry } from "../api/BitstampSocketClient";
 import { area, line } from "d3-shape";
-import { SectionHeader } from "./SectionHeader";
 import { DepthChartControls } from "./DepthChartControls";
 import { DepthChartHoverAreas } from "./DepthChartHoverAreas";
+import { Section } from "./Section";
 
 export type CumulativeBookEntry = {
   sum: number;
@@ -113,14 +113,13 @@ export function DepthChart(props: DepthChartProps) {
     .y1((d) => scaleY(d.sum));
 
   return (
-    <div className="bg-slate-800">
-      <SectionHeader title="Depth Chart" />
-      <DepthChartControls
-        lastPrice={lastPrice}
-        onZoomInButtonClick={zoomIn}
-        onZoomOutButtonClick={zoomOut}
-      />
+    <Section title="Depth chart" gridArea="depth">
       <div className="relative">
+        <DepthChartControls
+          lastPrice={lastPrice}
+          onZoomInButtonClick={zoomIn}
+          onZoomOutButtonClick={zoomOut}
+        />
         {hoveredDatum && (
           <div
             className="absolute text-yellow-50 text-sm px-2"
@@ -196,6 +195,6 @@ export function DepthChart(props: DepthChartProps) {
           )}
         </svg>
       </div>
-    </div>
+    </Section>
   );
 }

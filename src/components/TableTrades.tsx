@@ -1,5 +1,5 @@
 import { TradeEntry } from "../hooks/useLiveTrades";
-import { SectionHeader } from "./SectionHeader";
+import { Section } from "./Section";
 
 type TableTradesProps = {
   trades: TradeEntry[];
@@ -8,8 +8,7 @@ type TableTradesProps = {
 export function TableTrades(props: TableTradesProps) {
   const { trades } = props;
   return (
-    <div className="overflow-scroll" style={{ height: 400 }}>
-      <SectionHeader title="Trades" />
+    <Section title="Trades" gridArea="trades">
       <table className="bg-slate-800 grow">
         <thead>
           <tr>
@@ -40,6 +39,6 @@ export function TableTrades(props: TableTradesProps) {
           ))}
         </tbody>
       </table>
-    </div>
+    </Section>
   );
 }
