@@ -6,39 +6,33 @@ type SocketApiParams = {
 
 export type OrderBookEntry = [string, string, string];
 
+const channels = ["detail_order_book_ethusd", "live_trades_ethusd"];
+
 export function BitstampSocketClient(params: SocketApiParams) {
   const { onMessage } = params;
 
   const socket = new WebSocket(socketServer);
   socket.addEventListener("open", () => {
-    socket.send(`{
-      "event": "bts:subscribe",
-      "data": {
-          "channel": "detail_order_book_ethusd"
-      }
-    }`);
-    socket.send(`{
-      "event": "bts:subscribe",
-      "data": {
-          "channel": "live_trades_ethusd"
-      }
-    }`);
+    channels.forEach((channel) => {
+      socket.send(`{
+        "event": "bts:subscribe",
+        "data": {
+            "channel": "${channel}"
+        }
+      }`);
+    });
   });
 
   socket.addEventListener("message", onMessage);
 
   return () => {
-    socket.send(`{
-      "event": "bts:unsubscribe",
-      "data": {
-          "channel": "detail_order_book_ethusd"
-      }
-    }`);
-    socket.send(`{
-      "event": "bts:unsubscribe",
-      "data": {
-          "channel": "live_trades_ethusd"
-      }
-    }`);
+    channels.forEach((channel) => {
+      socket.send(`{
+        "event": "bts:unsubscribe",
+        "data": {
+            "channel": "${channel}"
+        }
+      }`);
+    });
   };
 }

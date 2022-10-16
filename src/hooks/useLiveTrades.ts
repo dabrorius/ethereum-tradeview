@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BitstampHttpClient } from "../api/BitstampHttpClient";
+import { BitstampSocketClient } from "../api/BitstampSocketClient";
 
 export type TradeEntry = {
   amount: number;
@@ -23,6 +24,34 @@ export function useLiveTrades() {
       }));
       setTrades(coercedData);
     });
+  }, []);
+
+  useMemo(() => {
+    const socketClientCleanup = BitstampSocketClient({
+      onMessage: (e) => {
+        const messageData = JSON.parse(e.data);
+
+        if (
+          messageData.channel === "live_trades_ethusd" &&
+          messageData.event === "trade"
+        ) {
+          const { amount, price, timestamp, type, id } = messageData.data;
+
+          setTrades((oldTradesList) => [
+            {
+              amount,
+              date: new Date(timestamp * 1000),
+              price,
+              tid: id,
+              type: type.toString(),
+            },
+            ...oldTradesList,
+          ]);
+        }
+      },
+    });
+
+    return socketClientCleanup;
   }, []);
 
   return trades;
