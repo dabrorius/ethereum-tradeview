@@ -13,7 +13,7 @@ export function useOrderBook() {
       onMessage: (e) => {
         const messageData = JSON.parse(e.data);
         if (
-          messageData.channel === "detail_order_book_ethusd" &&
+          messageData.channel === "order_book_ethusd" &&
           messageData.event === "data"
         ) {
           setBids(messageData.data.bids);

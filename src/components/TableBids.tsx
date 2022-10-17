@@ -21,7 +21,7 @@ export function TableBids(props: TableBidsProps) {
       </thead>
       <tbody>
         {data.map((row) => (
-          <tr key={row[2]}>
+          <tr key={`${row[0]}-${row[1]}`}>
             <td className="w-32 px-2 text-slate-50 text-sm">{row[1]}</td>
             <td className="text-green-600 px-2 text-sm text-right">
               {currencyFormatter.format(parseFloat(row[0]))}

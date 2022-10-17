@@ -6,7 +6,7 @@ type SocketApiParams = {
 
 export type OrderBookEntry = [string, string, string];
 
-const channels = ["detail_order_book_ethusd", "live_trades_ethusd"];
+const channels = ["order_book_ethusd", "live_trades_ethusd"];
 
 export function BitstampSocketClient(params: SocketApiParams) {
   const { onMessage } = params;

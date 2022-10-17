@@ -21,7 +21,7 @@ export function TableAsks(props: TableAsksProps) {
       </thead>
       <tbody>
         {data.map((row) => (
-          <tr key={row[2]}>
+          <tr key={`${row[0]}-${row[1]}`}>
             <td className="w-32 px-2 text-red-600 text-sm">
               {currencyFormatter.format(parseFloat(row[0]))}
             </td>
