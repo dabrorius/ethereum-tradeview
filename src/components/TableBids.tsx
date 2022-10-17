@@ -1,4 +1,5 @@
 import { OrderBookEntry } from "../api/BitstampSocketClient";
+import { currencyFormatter } from "../utils/formatters";
 
 type TableBidsProps = {
   data: OrderBookEntry[];
@@ -22,7 +23,9 @@ export function TableBids(props: TableBidsProps) {
         {data.map((row) => (
           <tr key={row[2]}>
             <td className="w-32 px-2 text-slate-50 text-sm">{row[1]}</td>
-            <td className="text-green-600 px-2 text-sm text-right">{row[0]}</td>
+            <td className="text-green-600 px-2 text-sm text-right">
+              {currencyFormatter.format(parseFloat(row[0]))}
+            </td>
           </tr>
         ))}
       </tbody>

@@ -1,4 +1,5 @@
 import { TradeEntry } from "../hooks/useLiveTrades";
+import { currencyFormatter, dateFormatter } from "../utils/formatters";
 import { Section } from "./Section";
 
 type TableTradesProps = {
@@ -30,10 +31,10 @@ export function TableTrades(props: TableTradesProps) {
                 {trade.amount}
               </td>
               <td className="text-slate-50 px-2 text-sm text-right">
-                {trade.date.toString()}
+                {dateFormatter.format(trade.date)}
               </td>
               <td className="text-slate-50 px-2 text-sm text-right">
-                {trade.price}
+                {currencyFormatter.format(trade.price)}
               </td>
             </tr>
           ))}
