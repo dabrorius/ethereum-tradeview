@@ -1,18 +1,34 @@
+import styled from "@emotion/styled";
 import { ReactElement } from "react";
+import { colors } from "../utils/colors";
 
 type TradeviewHeaderItemProps = {
   title: string;
   children: string | ReactElement;
 };
 
+const TradeviewHeaderItemInner = styled.div({
+  margin: "0 16px",
+});
+
+const TradeviewHeaderItemTitle = styled.div({
+  fontSize: 10,
+  color: colors.text2,
+});
+
+const TradeviewHeaderItemContent = styled.div({
+  fontSize: 12,
+  color: colors.text,
+});
+
 export function TradeviewHeaderItem({
   title,
   children,
 }: TradeviewHeaderItemProps) {
   return (
-    <div className="mx-3">
-      <div className="text-xs text-slate-400">{title}</div>
-      <div className="text-s">{children}</div>
-    </div>
+    <TradeviewHeaderItemInner>
+      <TradeviewHeaderItemTitle>{title}</TradeviewHeaderItemTitle>
+      <TradeviewHeaderItemContent>{children}</TradeviewHeaderItemContent>
+    </TradeviewHeaderItemInner>
   );
 }

@@ -1,11 +1,20 @@
+import styled from "@emotion/styled";
+import { colors } from "../utils/colors";
+
 type SectionHeaderProps = {
   title: string;
 };
 
+const SectionHeaderInner = styled.div({
+  color: colors.text2,
+  fontSize: 12,
+  textTransform: "uppercase",
+  padding: "2px 8px",
+  background: colors.headerBackground,
+  borderTop: `1px solid ${colors.border}`,
+  borderBottom: `1px solid ${colors.border}`,
+});
+
 export function SectionHeader({ title }: SectionHeaderProps) {
-  return (
-    <div className="text-white px-2 text-sm bg-gray-800 border-solid border-t-2 border-b-2 border-gray-700">
-      {title}
-    </div>
-  );
+  return <SectionHeaderInner>{title}</SectionHeaderInner>;
 }

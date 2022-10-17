@@ -7,6 +7,7 @@ import { area, line } from "d3-shape";
 import { DepthChartControls } from "./DepthChartControls";
 import { DepthChartHoverAreas } from "./DepthChartHoverAreas";
 import { Section } from "./Section";
+import { colors } from "../utils/colors";
 
 export type CumulativeBookEntry = {
   sum: number;
@@ -133,24 +134,24 @@ export function DepthChart(props: DepthChartProps) {
         <svg width="100%" height="200" ref={svgRef}>
           <path
             d={lineDataGenerator(cumulativeBids) || undefined}
-            stroke="green"
+            stroke={colors.positive}
             fill="none"
           />
           <path
             d={areaDataGenerator(cumulativeBids) || undefined}
             stroke="none"
-            fill="green"
+            fill={colors.positive}
             opacity="0.3"
           />
           <path
             d={lineDataGenerator(cumulativeAsks) || undefined}
-            stroke="red"
+            stroke={colors.negative}
             fill="none"
           />
           <path
             d={areaDataGenerator(cumulativeAsks) || undefined}
             stroke="none"
-            fill="red"
+            fill={colors.negative}
             opacity="0.3"
           />
 
@@ -187,7 +188,9 @@ export function DepthChart(props: DepthChartProps) {
           {hoveredDatum && (
             <circle
               className="pointer-events-none"
-              fill={hoveredDatum.type === "bid" ? "green" : "red"}
+              fill={
+                hoveredDatum.type === "bid" ? colors.positive : colors.negative
+              }
               r={4}
               cx={scaleX(hoveredDatum.datum.value)}
               cy={scaleY(hoveredDatum.datum.sum)}

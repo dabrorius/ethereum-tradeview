@@ -1,4 +1,6 @@
+import styled from "@emotion/styled";
 import { ReactElement } from "react";
+import { colors } from "../utils/colors";
 import { SectionHeader } from "./SectionHeader";
 
 type SectionProps = {
@@ -7,13 +9,25 @@ type SectionProps = {
   gridArea: string;
 };
 
+const SectionInner = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  background: colors.background,
+});
+
+const SectionScrollable = styled.div({
+  overflow: "scroll",
+  display: "flex",
+  flexGrow: 1,
+});
+
 export function Section(props: SectionProps) {
   const { title, children, gridArea } = props;
 
   return (
-    <div className="flex flex-col bg-slate-800" style={{ gridArea }}>
+    <SectionInner style={{ gridArea }}>
       <SectionHeader title={title} />
-      <div className="overflow-scroll flex grow">{children}</div>
-    </div>
+      <SectionScrollable>{children}</SectionScrollable>
+    </SectionInner>
   );
 }

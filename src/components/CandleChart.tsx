@@ -5,6 +5,7 @@ import { groupBy } from "lodash";
 import { CandleChartCandle } from "./CandleChartCandle";
 import { useRef } from "react";
 import { Section } from "./Section";
+import { colors } from "../utils/colors";
 
 type CandleChartProps = {
   trades: TradeEntry[];
@@ -75,7 +76,7 @@ export function CandleChart(props: CandleChartProps) {
       candleHeight,
       wickBottom,
       wickHeight,
-      color: close > openPrice ? "green" : "red",
+      color: close > openPrice ? colors.positive : colors.negative,
     };
   });
 

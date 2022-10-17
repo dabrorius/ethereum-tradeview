@@ -1,3 +1,5 @@
+import styled from "@emotion/styled";
+import { colors } from "../utils/colors";
 import { TradeviewHeaderItem } from "./TradeviewHeaderItem";
 
 type TradeviewHeaderProps = {
@@ -6,22 +8,35 @@ type TradeviewHeaderProps = {
   lowPrice: number;
 };
 
+const TradeviewHeaderInner = styled.div({
+  display: "flex",
+  alignItems: "center",
+  padding: 8,
+});
+
+const HeaderTitle = styled.h1({
+  color: colors.text,
+  fontSize: 22,
+  marginRight: 8,
+});
+
+const LastPriceSection = styled.div({
+  margin: "0 8px",
+});
+
 export function TradeviewHeader(props: TradeviewHeaderProps) {
   const { lastPrice, highPrice, lowPrice } = props;
 
   return (
-    <div
-      style={{ gridArea: "header" }}
-      className="text-slate-50 flex items-center px-2 py-1"
-    >
-      <h1 className="text-xl mr-4">ETH Tradeview</h1>
-      <div className="mx-3 ">{`$${lastPrice}`}</div>
+    <TradeviewHeaderInner style={{ gridArea: "header" }}>
+      <HeaderTitle>ETH Tradeview</HeaderTitle>
+      <LastPriceSection>{`$${lastPrice}`}</LastPriceSection>
       <TradeviewHeaderItem title="24h High">
         {`$${highPrice}`}
       </TradeviewHeaderItem>
       <TradeviewHeaderItem title="24h Low">
         {`$${lowPrice}`}
       </TradeviewHeaderItem>
-    </div>
+    </TradeviewHeaderInner>
   );
 }
