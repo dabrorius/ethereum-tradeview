@@ -47,8 +47,8 @@ type DepthChartProps = {
 export function DepthChart(props: DepthChartProps) {
   const { lastPrice } = props;
 
-  const svgRef = useRef<SVGSVGElement>(null);
-  const { width, height } = svgRef.current?.getBoundingClientRect() || {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { width, height } = containerRef.current?.getBoundingClientRect() || {
     width: 0,
     height: 0,
   };
@@ -115,7 +115,7 @@ export function DepthChart(props: DepthChartProps) {
 
   return (
     <Section title="Depth chart" gridArea="depth">
-      <div className="relative">
+      <div style={{ position: "relative", flexGrow: 1 }} ref={containerRef}>
         <DepthChartControls
           lastPrice={lastPrice}
           onZoomInButtonClick={zoomIn}
@@ -123,15 +123,17 @@ export function DepthChart(props: DepthChartProps) {
         />
         {hoveredDatum && (
           <div
-            className="absolute text-yellow-50 text-sm px-2"
-            style={{ left: scaleX(hoveredDatum.datum.value) }}
+            style={{
+              position: "absolute",
+              left: scaleX(hoveredDatum.datum.value),
+            }}
           >
             <p>{`$${hoveredDatum.datum.value}`}</p>
             <p>{hoveredDatum.datum.sum}</p>
           </div>
         )}
 
-        <svg width="100%" height="200" ref={svgRef}>
+        <svg width={width} height={height}>
           <path
             d={lineDataGenerator(cumulativeBids) || undefined}
             stroke={colors.positive}

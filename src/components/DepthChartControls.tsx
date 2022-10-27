@@ -16,9 +16,11 @@ const DepthChartControlsInner = styled.div({
 });
 
 const DepthChartControlsButton = styled.button({
-  color: colors.text2,
+  color: colors.text,
   fontSize: 18,
   padding: "0 8px",
+  border: "none",
+  background: "none",
 });
 
 const DepthChartControlsTitle = styled.div({
